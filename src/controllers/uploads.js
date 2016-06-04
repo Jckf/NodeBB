@@ -146,12 +146,20 @@ uploadsController.uploadThumb = function(req, res, next) {
 				return next(new Error('[[error:invalid-file]]'));
 			}
 
-			var size = parseInt(meta.config.topicThumbSize, 10) || 120;
+			var width, height;
+			if (meta.config.topicThumbSize.includes('x')) {
+				var resolution = meta.config.topicThumbSize.split('x');
+				width = parseInt(resolution[0], 10);
+				height = parseInt(resolution[1], 10);
+			} else {
+				width = parseInt(meta.config.topicThumbSize, 10);
+				height = parseInt(meta.config.topicThumbSize, 10);
+			}
 			image.resizeImage({
 				path: uploadedFile.path,
 				extension: path.extname(uploadedFile.name),
-				width: size,
-				height: size
+				width: width,
+				height: height
 			}, function(err) {
 				if (err) {
 					return next(err);
